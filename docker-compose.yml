@@ -11,8 +11,8 @@
 #     network. Prevents accidental public exposure if Caddy is misconfigured.
 # -----------------------------------------------------------------------------
 
-# Must match the Portainer stack name. The checkout directory is
-# player_test_harness, so without this SSH deploys would run as another project.
+# Must match the Portainer stack name. Without it, Compose names the project
+# after whatever directory the checkout is in.
 name: player-test-harness
 
 services:

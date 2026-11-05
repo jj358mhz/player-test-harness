@@ -29,8 +29,8 @@ repo owner), reached over LAN/VPN only. Sister project and template:
   the clean version), and `gh release create` with that CHANGELOG section
   plus a **Full Changelog** compare link.
 - **Keep the wiki current.** User docs live in the GitHub wiki
-  (https://github.com/jj358mhz/player_test_harness/wiki, a separate repo:
-  `git clone https://github.com/jj358mhz/player_test_harness.wiki.git`).
+  (https://github.com/jj358mhz/player-test-harness/wiki, a separate repo:
+  `git clone https://github.com/jj358mhz/player-test-harness.wiki.git`).
   When a release changes behaviour users see, update the matching page(s)
   in the same session and push after the release. Same public-repo rules:
   no workspace data, use `player.example.com` style examples. Pages:
@@ -342,7 +342,7 @@ after dependency changes.
 ## Deployment
 
 Utility Pi, same as CSL: `deploy.yml` SSHes to the Pi (port 2222), pulls
-into `~/git/player_test_harness`, `docker compose up -d --build`. Container
+into `~/git/player-test-harness`, `docker compose up -d --build`. Container
 `player-test-harness:5000` on the external `auth-net` network; Caddy block
 `player.telcomjj.com` with `import cf_tls` in `homelab-utility/caddy/Caddyfile`.
 Secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` (repo secrets) and
@@ -352,8 +352,8 @@ in the `player_harness_data` volume.
 Portainer shows **Total** control only for a stack it created. Ours is a
 Repository stack `player-test-harness`, automatic updates off, secrets pasted
 into its env editor (change them there and in `.env`); SSH remains the deployer.
-Compose's top-level `name:` must match the stack name, because the checkout
-directory uses underscores. A Portainer redeploy has no `APP_VERSION`, so the
+Compose's top-level `name:` must match the stack name, or the project follows
+the checkout directory. A Portainer redeploy has no `APP_VERSION`, so the
 header says `dev` until the next SSH deploy.
 
 ## Roadmap / status

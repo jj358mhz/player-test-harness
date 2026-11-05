@@ -1,6 +1,6 @@
 # 📺 player-test-harness
 
-[![Release](https://img.shields.io/github/v/release/jj358mhz/player_test_harness?label=release&color=ec1e79)](https://github.com/jj358mhz/player_test_harness/releases/latest)
+[![Release](https://img.shields.io/github/v/release/jj358mhz/player-test-harness?label=release&color=ec1e79)](https://github.com/jj358mhz/player-test-harness/releases/latest)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Engineering harness for triaging Uplynk playback. Syncs live channels from
@@ -8,7 +8,7 @@ your Uplynk workspaces, signs playback URLs server-side (HLS and DASH, with
 Preplay v2 for DRM), and opens them in a monitoring player that tracks
 latency, drift, ABR, DRM keys, ID3/SCTE-35, captions and more.
 
-📖 **[Read the wiki](https://github.com/jj358mhz/player_test_harness/wiki)** — getting started, using the player, latency and drift, DRM, browser compatibility, Uplynk conventions and troubleshooting.
+📖 **[Read the wiki](https://github.com/jj358mhz/player-test-harness/wiki)** — getting started, using the player, latency and drift, DRM, browser compatibility, Uplynk conventions and troubleshooting.
 
 ## 🌟 Highlights
 
@@ -62,7 +62,7 @@ latency, drift, ABR, DRM keys, ID3/SCTE-35, captions and more.
   number. Four engines to compare: **hls.js**, **Shaka
   Player**, **dash.js** and the browser's **native** HLS (Safari). Each npm
   engine offers the latest patch of its last three minor lines. See [docs/player.md](docs/player.md)
-  and the [wiki](https://github.com/jj358mhz/player_test_harness/wiki/Using-the-Player).
+  and the [wiki](https://github.com/jj358mhz/player-test-harness/wiki/Using-the-Player).
 - 📜 **Audit trail** — every signing / Preplay request (base URL and params,
   never the signature) and every account or sync action.
 
@@ -149,8 +149,8 @@ health of every channel that has a slicer: `slicer_id`, `channel`, `name`,
 Prerequisites: Docker Desktop, [uv](https://docs.astral.sh/uv/), Python 3.12.
 
 ```bash
-git clone https://github.com/jj358mhz/player_test_harness.git
-cd player_test_harness
+git clone https://github.com/jj358mhz/player-test-harness.git
+cd player-test-harness
 uv sync
 
 cp .env.example .env
@@ -192,8 +192,8 @@ uv run alembic revision --autogenerate -m "describe the change"
 Docker only — no Caddy, no `auth-net` network:
 
 ```bash
-git clone https://github.com/jj358mhz/player_test_harness.git
-cd player_test_harness
+git clone https://github.com/jj358mhz/player-test-harness.git
+cd player-test-harness
 cp .env.example .env
 docker build -t player-test-harness:local .
 docker run --rm --entrypoint python player-test-harness:local -c "import secrets; print(secrets.token_urlsafe(32))"   # SECRET_KEY
@@ -311,7 +311,7 @@ Secrets required for `deploy.yml`: `DEPLOY_HOST`, `DEPLOY_USER`,
 ## 📁 Repo layout
 
 ```
-player_test_harness/
+player-test-harness/
 ├── app/
 │   ├── __init__.py          # App factory + CLI (sync-channels, check-encryption, set-password)
 │   ├── config.py            # Env-var config

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.35.4] - 2026-11-04
+
+### Changed
+- The repository is now `player-test-harness`, matching the container, image
+  and Portainer stack. Links and the deploy path use the new name, and GitHub
+  redirects the old URLs. Clones can update with
+  `git remote set-url origin git@github.com:jj358mhz/player-test-harness.git`.
+
 ## [3.35.3] - 2026-11-04
 
 ### Fixed

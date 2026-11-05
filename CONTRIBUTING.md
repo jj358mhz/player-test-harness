@@ -15,7 +15,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 Before submitting a bug report:
 
-1. Check existing [issues](https://github.com/jj358mhz/player_test_harness/issues)
+1. Check existing [issues](https://github.com/jj358mhz/player-test-harness/issues)
 2. Test with multiple streams if possible
 3. Try different browsers
 4. Enable debug mode and check console
@@ -82,8 +82,8 @@ Links to test streams (if applicable).
 
 1. **Clone the repository**
 ```bash
-   git clone https://github.com/jj358mhz/player_test_harness.git
-   cd player_test_harness
+   git clone https://github.com/jj358mhz/player-test-harness.git
+   cd player-test-harness
 ```
 
 2. **Create a branch**
@@ -236,7 +236,7 @@ By contributing, you agree that your contributions will be licensed under the MI
 
 ## ❓ Questions?
 
-- Open an [Issue](https://github.com/jj358mhz/player_test_harness/issues)
+- Open an [Issue](https://github.com/jj358mhz/player-test-harness/issues)
 
 ---
 

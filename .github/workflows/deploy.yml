@@ -39,7 +39,7 @@ jobs:
           port: 2222
           script: |
             set -e
-            cd ~/git/player_test_harness
+            cd ~/git/player-test-harness
             git fetch --tags --force
             git pull origin main
             export APP_VERSION="$(git describe --tags --always --dirty)"

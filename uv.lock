@@ -653,7 +653,7 @@ wheels = [
 
 [[package]]
 name = "player-test-harness"
-version = "3.35.4"
+version = "3.35.5"
 source = { virtual = "." }
 dependencies = [
     { name = "alembic" },

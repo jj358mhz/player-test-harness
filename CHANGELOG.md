@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.35.5] - 2026-11-04
+
+### Fixed
+- Deploys no longer hang when the Pi's connection to GitHub stalls: each
+  `git fetch` is time-limited and retried up to three times, and the remote
+  command has its own timeout. The Pi now fast-forwards with
+  `git merge --ff-only origin/main`, so a diverged checkout fails the deploy
+  instead of creating a merge commit. Same approach as csl-slicer-console.
+
+### Changed
+- Default player engines: hls.js 1.7.4 and Shaka 5.3.3 (#95). Biome 2.6.4 for
+  linting (#96).
+
 ## [3.35.4] - 2026-11-04
 
 ### Changed

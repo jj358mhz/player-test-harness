@@ -301,8 +301,8 @@ player.telcomjj.com {
 - **`.github/dependabot.yml`** — weekly npm updates (player engines grouped
   separately from tooling) and monthly GitHub Actions updates.
 - **`.github/workflows/deploy.yml`** — on push to `main`, a `v*` tag, or
-  manual dispatch: SSH to the Utility Pi, `git pull`, `docker compose up -d
-  --build`, prune old images. `git describe` is baked in as `APP_VERSION`
+  manual dispatch: SSH to the Utility Pi, fetch with retries, fast-forward
+  to `origin/main`, `docker compose up -d --build`, prune old images. `git describe` is baked in as `APP_VERSION`
   and shown in the header.
 
 Secrets required for `deploy.yml`: `DEPLOY_HOST`, `DEPLOY_USER`,

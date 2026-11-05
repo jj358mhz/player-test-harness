@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.35.3] - 2026-11-04
+
+### Fixed
+- The Compose project is now named `player-test-harness`, matching its
+  Portainer stack, so SSH deploys and Portainer manage the same containers.
+  Portainer shows the stack with Total control, as it does for
+  csl-slicer-console.
+
 ## [3.35.2] - 2026-10-30
 
 ### Fixed

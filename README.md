@@ -227,7 +227,9 @@ In `.env`, write a `$` in the password as `$$` (Compose expands `$`).
 Runs on the homelab Utility Pi exactly like
 [csl-slicer-console](https://github.com/jj358mhz/csl-slicer-console):
 a Docker Compose stack on the shared `auth-net` network, fronted by Caddy at
-**player.telcomjj.com** *(LAN / VPN only)*.
+**player.telcomjj.com** *(LAN / VPN only)*. Portainer holds the stack record
+(Repository stack `player-test-harness`, automatic updates off); the SSH deploy
+does the deploying, under the same project name.
 
 ### Environment variables
 

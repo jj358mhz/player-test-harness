@@ -349,6 +349,13 @@ Secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` (repo secrets) and
 `.env` on the Pi (`SECRET_KEY`, `FERNET_KEY`, bootstrap admin). SQLite lives
 in the `player_harness_data` volume.
 
+Portainer shows **Total** control only for a stack it created. Ours is a
+Repository stack `player-test-harness`, automatic updates off, secrets pasted
+into its env editor (change them there and in `.env`); SSH remains the deployer.
+Compose's top-level `name:` must match the stack name, because the checkout
+directory uses underscores. A Portainer redeploy has no `APP_VERSION`, so the
+header says `dev` until the next SSH deploy.
+
 ## Roadmap / status
 
 - [x] Phase 0 — public GitHub repo, fresh history, scrubbed data

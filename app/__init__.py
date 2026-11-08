@@ -50,6 +50,10 @@ def create_app(config: Config | None = None) -> Flask:
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_bp)
 
+    from app.auth.sso import sign_in_from_gate
+
+    app.before_request(sign_in_from_gate)
+
     from app.uplynk.health import fmt_age
 
     app.add_template_filter(fmt_age, "age")

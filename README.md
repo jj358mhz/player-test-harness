@@ -252,6 +252,7 @@ does the deploying, under the same project name.
 | `CSL_BASE_URL`             | csl-slicer-console URL for slicer links (optional)            |
 | `CSL_API_TOKEN`            | The console's `PLAYER_API_TOKEN`: show slicer wallclock (optional) |
 | `CSL_API_URL`              | Where this container reaches the console (default `CSL_BASE_URL`) |
+| `AUTHENTIK_GATE_SECRET`    | Secret Caddy sends with Authentik's user, for single sign-on (optional) |
 | `LOG_LEVEL`                | `info` / `debug` / `warning`                                  |
 | `GUNICORN_WORKERS`         | Worker count (default 2)                                      |
 
@@ -281,6 +282,7 @@ In `homelab-utility/caddy/Caddyfile`:
 ```caddy
 player.telcomjj.com {
 	import cf_tls
+	import authentik_gate
 	reverse_proxy player-test-harness:5000
 	import security_headers
 	log {
@@ -292,6 +294,13 @@ player.telcomjj.com {
 	}
 }
 ```
+
+`authentik_gate` puts Authentik's forward auth in front of the player (see
+`homelab-utility`'s Caddy and Authentik READMEs). With `AUTHENTIK_GATE_SECRET`
+set to the same value in both places, Caddy also sends that secret and the
+signed-in user's email, and the player signs in the account with that email.
+Signing out of the player then signs out of Authentik too. An Authentik user
+with no player account gets the normal login page, with a note.
 
 ## ⚙️ CI/CD
 

@@ -57,5 +57,8 @@ class Config:
         # container reaches it at (default CSL_BASE_URL) and the shared token.
         self.CSL_API_URL = (os.getenv("CSL_API_URL", "").strip() or self.CSL_BASE_URL).rstrip("/")
         self.CSL_API_TOKEN = os.getenv("CSL_API_TOKEN", "").strip()
+        # Shared with Caddy, which sends it in X-Authentik-Gate on requests Authentik
+        # let through; only then is X-Authentik-Email trusted (empty = no single sign-on).
+        self.AUTHENTIK_GATE_SECRET = os.getenv("AUTHENTIK_GATE_SECRET", "").strip()
 
         self.WTF_CSRF_ENABLED = os.getenv("WTF_CSRF_ENABLED", "true").lower() == "true"

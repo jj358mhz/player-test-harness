@@ -77,6 +77,7 @@ def test_unknown_email_gets_the_login_page_with_a_note(gated, client):
     body = client.get("/auth/login", headers=_gate("nobody@example.com")).get_data(as_text=True)
     assert "signed in to Authentik as nobody@example.com" in body
     assert "no player account" in body
+    assert "ask an admin" not in body
 
 
 def test_unknown_email_leaves_a_password_session_alone(gated, client):

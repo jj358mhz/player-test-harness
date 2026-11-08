@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.36.0] - 2026-11-07
 
-### ✨ Added
+### Added
 - **Single sign-on through Authentik.** Behind the Authentik forward-auth gate in
   Caddy, the player signs in the account matching your Authentik email, so there's
   no second login. It only trusts that email when the request also carries

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.36.1] - 2026-11-07
+
+### Fixed
+- **The web app manifest loads behind the Authentik gate.** Browsers fetch it
+  without cookies unless asked, so the gate turned it away and an installed
+  player lost its name and icon. The manifest link now asks for credentials.
+- **The sign-in note for an Authentik user without a player account** no longer
+  says to ask an admin to add one; the player has no user management. It now
+  says to use the player's password, or the same email in Authentik.
+
 ## [3.36.0] - 2026-11-07
 
 ### Added

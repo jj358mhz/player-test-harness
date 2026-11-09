@@ -62,9 +62,7 @@ def run_health(app: Flask, last: datetime | None, now: datetime | None = None) -
     from app.api.service import check_health
 
     with app.app_context():
-        channels = (
-            db.session.query(Channel).filter(Channel.is_active.is_(True), Channel.checkable()).all()
-        )
+        channels = db.session.query(Channel).filter(Channel.listed(), Channel.checkable()).all()
         if channels:
             results = check_health(channels)
             bad = sum(1 for _, h in results if h.needs_attention)
@@ -77,9 +75,11 @@ def run_health(app: Flask, last: datetime | None, now: datetime | None = None) -
 def due_accounts(
     every: timedelta, now: datetime, failed: dict[int, datetime]
 ) -> list[UplynkAccount]:
-    """Accounts whose last sync is older than `every` (never-synced ones first)."""
+    """Unpaused accounts whose last sync is older than `every` (never-synced ones first)."""
     due = []
-    for account in db.session.query(UplynkAccount).order_by(UplynkAccount.id).all():
+    for account in (
+        db.session.query(UplynkAccount).filter_by(is_paused=False).order_by(UplynkAccount.id)
+    ):
         last = account.last_synced_at
         if last is not None and last.tzinfo is None:
             last = last.replace(tzinfo=UTC)  # SQLite drops the zone

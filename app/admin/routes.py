@@ -178,6 +178,34 @@ def delete_account(account_id: int):
     return redirect(url_for("admin.list_accounts"))
 
 
+@bp.route("/uplynk-accounts/<int:account_id>/pause", methods=["POST"])
+@admin_required
+def pause_account(account_id: int):
+    acct = db.session.get(UplynkAccount, account_id) or abort(404)
+    acct.is_paused = True
+    db.session.commit()
+    log_admin_event("uplynk_account", "pause", f"Paused Uplynk account '{acct.label}'", acct.label)
+    flash(
+        f"Uplynk account '{acct.label}' paused. Its channels are hidden and not synced or "
+        "checked; nothing changes in Uplynk.",
+        "info",
+    )
+    return redirect(url_for("admin.list_accounts"))
+
+
+@bp.route("/uplynk-accounts/<int:account_id>/resume", methods=["POST"])
+@admin_required
+def resume_account(account_id: int):
+    acct = db.session.get(UplynkAccount, account_id) or abort(404)
+    acct.is_paused = False
+    db.session.commit()
+    log_admin_event(
+        "uplynk_account", "resume", f"Resumed Uplynk account '{acct.label}'", acct.label
+    )
+    flash(f"Uplynk account '{acct.label}' resumed. Sync it to pick up any changes.", "success")
+    return redirect(url_for("admin.list_accounts"))
+
+
 @bp.route("/uplynk-accounts/<int:account_id>/sync", methods=["POST"])
 @admin_required
 def sync_account_route(account_id: int):
@@ -191,11 +219,16 @@ def sync_account_route(account_id: int):
 @bp.route("/uplynk-accounts/sync-all", methods=["POST"])
 @admin_required
 def sync_all():
-    accounts = db.session.query(UplynkAccount).order_by(UplynkAccount.label).all()
+    accounts = (
+        db.session.query(UplynkAccount)
+        .filter_by(is_paused=False)
+        .order_by(UplynkAccount.label)
+        .all()
+    )
     for acct in accounts:
         result = sync_account(acct)
         log_admin_event("sync", "error" if result.error else "run", result.summary, acct.label)
         flash(result.summary, "error" if result.error else "success")
     if not accounts:
-        flash("No Uplynk accounts to sync yet.", "info")
+        flash("No unpaused Uplynk accounts to sync.", "info")
     return redirect(url_for("main.index"))

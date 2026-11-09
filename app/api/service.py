@@ -65,6 +65,8 @@ def parse_request(data: dict[str, Any]) -> PlaybackRequest:
             external_id=external_id,
             owner_id=account.workspace_id if external_id else None,
         )
+    if account.is_paused:
+        raise PlaybackError(f"Uplynk account {account.label!r} is paused. Resume it to play.")
 
     mode = data.get("mode", "url")
     if mode not in ("url", "preplay"):

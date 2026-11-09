@@ -214,6 +214,8 @@ def channel_label(channel: Channel) -> str:
     label = channel.description or channel.channel_id
     if channel.is_event:
         label += " (event)"
+    if channel.uplynk_account.is_paused:
+        return f"{label} (paused)"
     return label if channel.is_active else f"{label} (inactive)"
 
 

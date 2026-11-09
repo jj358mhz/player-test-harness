@@ -89,8 +89,8 @@ def _register_cli(app: Flask) -> None:
         from app.uplynk.sync import sync_account
 
         query = db.session.query(UplynkAccount).order_by(UplynkAccount.label)
-        if label:
-            query = query.filter_by(label=label)
+        # Paused accounts are skipped unless named (then sync says it's paused).
+        query = query.filter_by(label=label) if label else query.filter_by(is_paused=False)
         accounts = query.all()
         if not accounts:
             raise click.ClickException("No matching Uplynk accounts.")
@@ -115,7 +115,7 @@ def _register_cli(app: Flask) -> None:
 
         query = (
             db.session.query(Channel)
-            .filter(Channel.is_active.is_(True), Channel.checkable())
+            .filter(Channel.listed(), Channel.checkable())
             .join(UplynkAccount)
         )
         if label:
@@ -141,7 +141,7 @@ def _register_cli(app: Flask) -> None:
 
         query = (
             db.session.query(Channel)
-            .filter(Channel.is_active.is_(True), Channel.checkable())
+            .filter(Channel.listed(), Channel.checkable())
             .join(UplynkAccount)
         )
         if label:

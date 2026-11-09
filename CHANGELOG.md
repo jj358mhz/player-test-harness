@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.37.0] - 2026-11-08
+
+### Added
+- **Pause and Resume for Uplynk accounts** (as in csl-slicer-console v1.22.0).
+  A paused account isn't synced (by hand, Sync all, the background sync or
+  `flask sync-channels`) and its channels aren't health or encryption checked.
+  They leave the dashboard, Events, the player and compare menus, `/sign`,
+  `/api/channels`, the slicer console's health badges and its Player links,
+  and the player won't sign for them. Nothing changes in Uplynk, and Resume
+  brings everything back, pins included. Both actions are in Activity.
+  Presets that name a paused channel keep it, labelled "(paused)".
+- Adds `uplynk_accounts.is_paused` (migration); existing accounts start unpaused.
+
 ## [3.36.1] - 2026-11-07
 
 ### Fixed

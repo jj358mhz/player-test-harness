@@ -90,12 +90,19 @@ def test_health_check_skips_paused_accounts(app, paused_and_live, monkeypatch):
     assert [c.channel_id for c in checked] == ["chan0002"]
 
 
-@pytest.mark.parametrize("url", ["/", "/player", "/compare", "/api/channels", "/sign"])
+@pytest.mark.parametrize("url", ["/", "/api/channels", "/sign"])
 def test_lists_leave_out_paused_accounts(auth_client, paused_and_live, url):
     body = auth_client.get(url).get_data(as_text=True)
     assert "Paused Channel" not in body
     assert "paused_acct" not in body
     assert "live_acct" in body
+
+
+def test_player_channels_leave_out_paused_accounts(paused_and_live):
+    # /player and /compare get these; without a frontend build they don't render them.
+    from app.main.routes import _channel_options
+
+    assert [c["account"] for c in _channel_options()] == ["live_acct"]
 
 
 def test_dashboard_says_when_every_account_is_paused(auth_client, make_account):

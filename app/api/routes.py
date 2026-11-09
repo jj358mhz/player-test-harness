@@ -40,7 +40,7 @@ def playback():
 def channels():
     rows = (
         db.session.query(Channel)
-        .filter_by(is_active=True)
+        .filter(Channel.listed())
         .join(UplynkAccount)
         .order_by(UplynkAccount.label, Channel.is_favorite.desc(), Channel.description)
         .all()
@@ -181,9 +181,7 @@ def health_by_slicer():
     rows = (
         db.session.query(Channel)
         # Channels only: an event's slicer comes and goes (console contract unchanged).
-        .filter(
-            Channel.is_active.is_(True), Channel.kind == "channel", Channel.slicer_id.isnot(None)
-        )
+        .filter(Channel.listed(), Channel.kind == "channel", Channel.slicer_id.isnot(None))
         .order_by(Channel.slicer_id, Channel.id)
         .all()
     )

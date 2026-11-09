@@ -163,7 +163,10 @@ after dependency changes.
   keep both lists in step. Page `/sessions/<slug>` embeds the JSON with
   `|tojson` and draws it with `frontend/src/recording.ts` (second Vite
   entry; `app/vite.py` collects CSS from imported chunks).
-- `app/admin/` — Uplynk account CRUD + sync (admin-only).
+- `app/admin/` — Uplynk account CRUD + sync (admin-only). **Pause** (v3.37.0,
+  `UplynkAccount.is_paused`, from CSL v1.22.0): no sync or checks, no signing,
+  and its channels are left out of lists. Query channels for lists and checks
+  with `Channel.listed()` (active and on an unpaused account), not `is_active`.
 - `app/presets.py` — saved engine presets (`EnginePreset`): a deep-link
   query without `src`/rays (an optional `channel=<id>`, checked to exist),
   re-validated server-side with the

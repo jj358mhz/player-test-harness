@@ -89,6 +89,11 @@ class UplynkAccount(Base):
         Boolean, default=False, server_default=false(), nullable=False
     )
 
+    # A paused account isn't synced, checked or signed for, and its channels are left out of lists.
+    is_paused: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=false(), nullable=False
+    )
+
     last_synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     last_sync_error: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -213,6 +218,11 @@ class Channel(Base):
         if self.actual_stop:
             return "ended"
         return "live" if self.actual_start else "pre"
+
+    @classmethod
+    def listed(cls):
+        """SQL filter: active rows on an unpaused account (dashboard, player, checks)."""
+        return cls.is_active.is_(True) & cls.uplynk_account.has(is_paused=False)
 
     @classmethod
     def checkable(cls):

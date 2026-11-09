@@ -642,6 +642,10 @@ form.inline {
 .badge--event--ended {
     color: var(--text-dim);
 }
+/* Uplynk accounts page: a paused account (grey; gold is for pins). */
+.badge--paused {
+    color: var(--text-dim);
+}
 .channel-card__health {
     display: flex;
     align-items: center;

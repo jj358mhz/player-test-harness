@@ -115,6 +115,9 @@ def sync_account(account: UplynkAccount) -> SyncResult:
       servers, their failure doesn't fail the channel sync.
     """
     result = SyncResult(account_id=account.id, account_label=account.label)
+    if account.is_paused:
+        result.error = "This account is paused. Resume it to sync."
+        return result
 
     try:
         client = build_client(account)

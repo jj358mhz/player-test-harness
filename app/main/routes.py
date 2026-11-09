@@ -42,10 +42,10 @@ from app.vite import COMPARE_ENTRY, RECORDING_ENTRY, vite_assets
 
 
 def _active_rows() -> list[Channel]:
-    """Active channels then events, per account: pinned first, then by name / start."""
+    """Active channels then events, per unpaused account: pinned first, then by name / start."""
     return (
         db.session.query(Channel)
-        .filter_by(is_active=True)
+        .filter(Channel.listed())
         .join(UplynkAccount)
         .order_by(
             UplynkAccount.label,
@@ -61,8 +61,8 @@ def _active_rows() -> list[Channel]:
 def events_enabled() -> bool:
     """Show the Events page (and its header link): an account syncs events, or some are listed."""
     return bool(
-        db.session.query(UplynkAccount.id).filter_by(sync_events=True).first()
-        or db.session.query(Channel.id).filter_by(kind="event", is_active=True).first()
+        db.session.query(UplynkAccount.id).filter_by(sync_events=True, is_paused=False).first()
+        or db.session.query(Channel.id).filter(Channel.kind == "event", Channel.listed()).first()
     )
 
 
@@ -91,7 +91,8 @@ def _dashboard(tab: str) -> str:
         (label, list(items))
         for label, items in groupby(shown, key=lambda c: c.uplynk_account.label)
     ]
-    account_count = db.session.query(UplynkAccount).count()
+    account_count = db.session.query(UplynkAccount).filter_by(is_paused=False).count()
+    paused_count = db.session.query(UplynkAccount).filter_by(is_paused=True).count()
     checked = [c.health_checked_at for c in rows if c.health_checked_at]
     sparks, since = health_history.dashboard(
         [c.id for c in shown], max(checked) if checked else None
@@ -102,6 +103,7 @@ def _dashboard(tab: str) -> str:
         tab=tab,
         total=len(shown),
         account_count=account_count,
+        paused_count=paused_count,
         attention=sum(1 for c in shown if c.needs_attention),
         health_checked_at=max(checked) if checked else None,
         health_interval=current_app.config["CHANNEL_HEALTH_INTERVAL"],
@@ -142,9 +144,7 @@ def check_channel_health():
     """Check every active channel's live edge now (the background check, on demand)."""
     from app.api.service import check_health
 
-    channels = (
-        db.session.query(Channel).filter(Channel.is_active.is_(True), Channel.checkable()).all()
-    )
+    channels = db.session.query(Channel).filter(Channel.listed(), Channel.checkable()).all()
     if not channels:
         return redirect(url_for("main.index"))
     results = check_health(channels)
@@ -258,7 +258,7 @@ def channel_by_slicer(slicer_id: str):
     One channel (or, without channels, one live event) → the player on it;
     several → the dashboard filtered to them; none → the dashboard with a note.
     """
-    rows = db.session.query(Channel).filter_by(is_active=True, slicer_id=slicer_id).all()
+    rows = db.session.query(Channel).filter(Channel.listed(), Channel.slicer_id == slicer_id).all()
     # Its channels; if it feeds none, the live event it's slicing.
     ids = [c.id for c in rows if not c.is_event] or [c.id for c in rows if c.event_phase == "live"]
     if len(ids) == 1:
@@ -273,7 +273,12 @@ def channel_by_slicer(slicer_id: str):
 @bp.route("/sign")
 @login_required
 def sign_tool() -> str:
-    accounts = db.session.query(UplynkAccount).order_by(UplynkAccount.label).all()
+    accounts = (
+        db.session.query(UplynkAccount)
+        .filter_by(is_paused=False)
+        .order_by(UplynkAccount.label)
+        .all()
+    )
     channel = None
     if request.args.get("channel"):
         channel = db.session.get(Channel, request.args.get("channel", type=int))
@@ -351,12 +356,12 @@ def presets(form: dict | None = None, error: str | None = None, editing: int | N
             else describe("engine=hlsjs")["fields"]
         )
     ad_names = sorted({name for (name,) in db.session.query(AdServer.name).all()})
-    # Active channels, plus the one the form names even if it went inactive.
+    # Listed channels, plus the one the form names even if it went inactive or paused.
     chosen = int(form["channel"]) if str(form.get("channel") or "").isdigit() else 0
     channels = (
         db.session.query(Channel)
         .join(UplynkAccount)
-        .filter(Channel.is_active.is_(True) | (Channel.id == chosen))
+        .filter(Channel.listed() | (Channel.id == chosen))
         .order_by(UplynkAccount.label, Channel.is_favorite.desc(), Channel.description)
         .all()
     )

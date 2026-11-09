@@ -34,7 +34,16 @@
     </div>
 </div>
 
-{% if not account_count %}
+{% if not account_count and paused_count %}
+<div class="card">
+    <p>Every Uplynk account is paused.
+        {% if current_user.is_admin %}
+        Resume one on the <a href="{{ url_for('admin.list_accounts') }}">Uplynk Accounts</a> page.
+        {% endif %}
+    </p>
+    <p class="muted">You can still open the <a href="{{ url_for('main.player') }}">player</a> with any HLS URL.</p>
+</div>
+{% elif not account_count %}
 <div class="card">
     <p>No Uplynk accounts yet.
         {% if current_user.is_admin %}

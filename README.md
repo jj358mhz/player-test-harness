@@ -201,6 +201,7 @@ docker run --rm --entrypoint python player-test-harness:local -c "from cryptogra
 # Paste both into .env with your BOOTSTRAP_ADMIN_EMAIL / BOOTSTRAP_ADMIN_PASSWORD
 
 docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
+curl http://localhost:5051/health
 ```
 
 Sign in at `http://localhost:5051`, add an Uplynk account, then **Sync**.
@@ -221,6 +222,58 @@ docker exec -it player-test-harness flask --app 'app:create_app()' set-password 
 or start over, deleting the database volume:
 `docker compose -f docker-compose.yml -f docker-compose.local.yml down -v`.
 In `.env`, write a `$` in the password as `$$` (Compose expands `$`).
+
+Every `docker compose` command for this instance needs both `-f` flags,
+including `stop`, `down` and `logs`. Without them, Compose uses the
+production `docker-compose.yml` on its own, which publishes no port (so
+`curl` says *Couldn't connect to server*) and needs the external `auth-net`
+network.
+
+### Linking a local console
+
+For slicer links and the **Slicer wallclock** row from a
+[csl-slicer-console](https://github.com/jj358mhz/csl-slicer-console)
+running from its own local overlay on the same machine, add to `.env`:
+
+```bash
+CSL_BASE_URL=http://localhost:5050               # links your browser follows
+CSL_API_URL=http://host.docker.internal:5050     # where this container reaches the console
+CSL_API_TOKEN=<token>                            # the console's PLAYER_API_TOKEN, same value
+```
+
+Inside the container, `localhost` is the container itself, and the two
+overlays put each app on its own Docker network, so the player reaches the
+console through the port it publishes on the host (5050, or the console's
+`WEB_PORT`). The overlay maps `host.docker.internal` to the host on Linux
+too. Generate the token once and set it on both sides: here as
+`CSL_API_TOKEN`, in the console's `.env` as `PLAYER_API_TOKEN`, with
+`PLAYER_BASE_URL=http://localhost:5051` and
+`PLAYER_API_URL=http://host.docker.internal:5051` for its links and health
+badges. Then restart each app from its own folder so it reads the new `.env`:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+```
+
+### Moving from a `player_test_harness` clone
+
+The repository was renamed in v3.35.4. To move an older clone without
+losing its `.env` or database:
+
+```bash
+cd player_test_harness
+docker compose -f docker-compose.yml -f docker-compose.local.yml stop
+cp .env ~/player-test-harness.env.bak
+docker cp player-test-harness:/app/data/player-test-harness.db ~/player-test-harness.db.bak
+docker compose -f docker-compose.yml -f docker-compose.local.yml down   # never -v
+cd .. && mv player_test_harness player-test-harness && cd player-test-harness
+git remote set-url origin https://github.com/jj358mhz/player-test-harness.git
+git pull
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
+```
+
+`.env` moves with the folder, and the database volume
+(`player_harness_data`) has a fixed name, so the new checkout picks it up.
 
 ## 🚢 Production deployment
 

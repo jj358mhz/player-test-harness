@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.37.1] - 2026-11-09
+
+### Changed
+- `docker-compose.local.yml` maps `host.docker.internal` to the host, so a
+  local player can reach a local csl-slicer-console on Docker Engine for Linux
+  as well as Docker Desktop.
+- README: *Running your own instance* shows the `.env` lines that link a local
+  console, notes that every `docker compose` command needs both `-f` flags, and
+  how to move a clone from before the rename without losing `.env` or the
+  database. `.env.example` gets the matching local `CSL_API_URL` (#106).
+
 ## [3.37.0] - 2026-11-08
 
 ### Added

@@ -8,6 +8,10 @@
 #   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
 #   curl http://localhost:5051/health
 #
+# Every compose command for this instance needs both -f flags (stop, down,
+# logs too); without them Compose uses the production file, which publishes
+# no port and needs the external auth-net network.
+#
 # Note: DRM playback (EME) needs a secure context — localhost counts, a bare
 # LAN IP over http does not. Put it behind TLS to use DRM from other hosts.
 # -----------------------------------------------------------------------------
@@ -17,6 +21,10 @@ services:
     image: player-test-harness:local
     ports:
       - "${WEB_PORT:-5051}:5000"
+    # Lets CSL_API_URL reach a local console through the host's published
+    # port. Docker Desktop has this name already; Docker Engine on Linux doesn't.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   web:
